@@ -1,8 +1,6 @@
 package main
 
 import (
-	"exploris/player"
-
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -32,7 +30,7 @@ func main() {
 
 	defer renderer.Destroy()
 
-	player, err := player.NewPlayer(renderer, screenWidth/2, screenHeight-32)
+	player, err := NewPlayer(renderer, screenWidth/2, screenHeight-32)
 
 	if err != nil {
 		panic(err)

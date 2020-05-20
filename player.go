@@ -1,4 +1,4 @@
-package player
+package main
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ const (
 	playerSpeed  = 0.10 //0.05
 	spriteWidth  = 24
 	spriteHeight = 32
-	spriteScale  = 3.5
+	spriteScale  = 5.0
 )
 
 var (
@@ -40,13 +40,13 @@ func NewPlayer(renderer *sdl.Renderer, x, y int32) (*Player, error) {
 	return &Player{Texture: texture, X: float64(x), Y: float64(y)}, nil
 }
 
-func (p *Player) Draw(renderer *sdl.Renderer) {
+func (p *Player) OnDraw(renderer *sdl.Renderer) {
 	renderer.Copy(p.Texture,
 		&sdl.Rect{X: 0, Y: 0, W: spriteWidth, H: spriteHeight},
 		&sdl.Rect{X: int32(p.X - float64(playerWidth/2.0)), Y: int32(p.Y-float64(playerHeight/2.0)) - 100, W: playerWidth, H: playerHeight})
 }
 
-func (p *Player) Update() {
+func (p *Player) OnUpdate() {
 	keys := sdl.GetKeyboardState()
 
 	if keys[sdl.SCANCODE_LEFT] == 1 || keys[sdl.SCANCODE_A] == 1 {

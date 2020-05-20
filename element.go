@@ -12,8 +12,8 @@ type Vector struct {
 }
 
 type Component interface {
-	onUpdate() error
-	onDraw(renderer *sdl.Renderer) error
+	OnUpdate() error
+	OnDraw(renderer *sdl.Renderer) error
 }
 
 type Element struct {
