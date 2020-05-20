@@ -2,14 +2,21 @@ package player
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	playerSpeed  = 0.05
-	playerWidth  = 24
-	playerHeight = 32
+	playerSpeed  = 0.10 //0.05
+	spriteWidth  = 24
+	spriteHeight = 32
+	spriteScale  = 3.5
+)
+
+var (
+	playerWidth  = int32(math.Round(spriteWidth * spriteScale))
+	playerHeight = int32(math.Round(spriteHeight * spriteScale))
 )
 
 // Player struct
@@ -35,8 +42,8 @@ func NewPlayer(renderer *sdl.Renderer, x, y int32) (*Player, error) {
 
 func (p *Player) Draw(renderer *sdl.Renderer) {
 	renderer.Copy(p.Texture,
-		&sdl.Rect{X: 0, Y: 0, W: 24, H: 32},
-		&sdl.Rect{X: int32(p.X) - playerWidth/2, Y: int32(p.Y) - playerHeight/2, W: 24, H: 32})
+		&sdl.Rect{X: 0, Y: 0, W: spriteWidth, H: spriteHeight},
+		&sdl.Rect{X: int32(p.X - float64(playerWidth/2.0)), Y: int32(p.Y-float64(playerHeight/2.0)) - 100, W: playerWidth, H: playerHeight})
 }
 
 func (p *Player) Update() {
@@ -44,7 +51,10 @@ func (p *Player) Update() {
 
 	if keys[sdl.SCANCODE_LEFT] == 1 || keys[sdl.SCANCODE_A] == 1 {
 		p.X -= playerSpeed
-	} else if keys[sdl.SCANCODE_RIGHT] == 1 || keys[sdl.SCANCODE_D] == 1 {
+	}
+
+	if keys[sdl.SCANCODE_RIGHT] == 1 || keys[sdl.SCANCODE_D] == 1 {
 		p.X += playerSpeed
 	}
+
 }

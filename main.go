@@ -46,6 +46,12 @@ func main() {
 			}
 		}
 
+		keys := sdl.GetKeyboardState()
+
+		if (keys[sdl.SCANCODE_LCTRL] == 1 || keys[sdl.SCANCODE_RCTRL] == 1) && (keys[sdl.SCANCODE_Q] == 1 || keys[sdl.SCANCODE_W] == 1) {
+			return
+		}
+
 		renderer.SetDrawColor(255, 255, 255, 255)
 		renderer.Clear()
 
