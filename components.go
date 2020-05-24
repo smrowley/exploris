@@ -52,11 +52,8 @@ func (sr *SpriteRenderer) OnUpdate() error {
 
 	index := int(x / 10)
 
-	//fmt.Printf("index %v, y left: %v, player pos: %v\n", index, ground[index].vy[0], sr.element.position.Y)
-
 	if int(ground[index].vy[0]) < int(sr.element.position.Y+col.relativePosition.Y+col.radius) {
 		sr.element.position.Y = float64(int32(ground[index].vy[0]) - playerHeight)
-		//fmt.Println("ay")
 	}
 
 	return nil
