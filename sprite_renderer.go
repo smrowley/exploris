@@ -7,13 +7,17 @@ import (
 )
 
 type SpriteRenderer struct {
-	texture *sdl.Texture
-	element *Element
+	texture        *sdl.Texture
+	element        *Element
+	rowIndex       uint8
+	animationIndex uint8
+	flip           sdl.RendererFlip
 }
 
 func newSpriteRenderer(renderer *sdl.Renderer, fileName string) *SpriteRenderer {
 	return &SpriteRenderer{
 		texture: textureFromBitmap(renderer, fileName),
+		flip:    sdl.FLIP_NONE,
 	}
 }
 
@@ -36,9 +40,9 @@ func (sr *SpriteRenderer) SetElement(element *Element) {
 }
 
 func (sr *SpriteRenderer) OnDraw(renderer *sdl.Renderer) error {
-	err := renderer.Copy(sr.texture,
-		&sdl.Rect{X: 0, Y: 0, W: spriteWidth, H: spriteHeight},
-		&sdl.Rect{X: int32(sr.element.position.X /* - float64(playerWidth/2.0)*/), Y: int32(sr.element.position.Y /* - float64(playerHeight/2.0)*/), W: playerWidth, H: playerHeight})
+	err := renderer.CopyEx(sr.texture,
+		&sdl.Rect{X: int32(sr.animationIndex * spriteWidth), Y: int32(sr.rowIndex * spriteHeight), W: spriteWidth, H: spriteHeight},
+		&sdl.Rect{X: int32(sr.element.position.X /* - float64(playerWidth/2.0)*/), Y: int32(sr.element.position.Y /* - float64(playerHeight/2.0)*/), W: playerWidth, H: playerHeight}, 0, nil, sr.flip)
 
 	return err
 }
@@ -66,6 +70,27 @@ func (sr *SpriteRenderer) OnUpdate() error {
 	}
 
 	fmt.Printf("grounded: %v\n", sr.element.grounded)
+
+	fmt.Println(sr.element.velocity)
+
+	if sr.element.velocity.X != 0 {
+		fmt.Println("runnin")
+		sr.rowIndex = 1
+		sr.animationIndex++
+		if sr.animationIndex > 3 {
+			sr.animationIndex = 0
+		}
+
+		if sr.element.velocity.X < 0 {
+			sr.flip = sdl.FLIP_HORIZONTAL
+		} else {
+			sr.flip = sdl.FLIP_NONE
+		}
+	} else {
+		//sr.flip = sdl.FLIP_NONE
+		sr.rowIndex = 0
+		sr.animationIndex = 0
+	}
 
 	return nil
 }
