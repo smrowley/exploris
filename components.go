@@ -50,10 +50,17 @@ func (sr *SpriteRenderer) OnUpdate() error {
 	col := sr.element.collisionPoints[0]
 	x := sr.element.position.X
 
-	index := int(x / 10)
+	relativeX := (x + col.relativePosition.X) / 10 // ground width TODO read dynamically
+	index := int(relativeX)
+	relativeX -= float64(index)
 
-	if int(ground[index].vy[0]) < int(sr.element.position.Y+col.relativePosition.Y+col.radius) {
-		sr.element.position.Y = float64(int32(ground[index].vy[0]) - playerHeight)
+	groundHeightAtPlayerX := float64(ground[index].vy[0]) - (float64(ground[index].vy[0]-ground[index].vy[1]) * relativeX) + 1
+	//groundHeightAtPlayerX := float64(ground[index].vy[0]) float64(ground[index].vy[0]-ground[index].vy[1])
+
+	fmt.Printf("relativeX: %v, ground index: %v, v0: %v, v1: %v\n", relativeX, index, ground[index].vy[0], ground[index].vy[1])
+
+	if groundHeightAtPlayerX < sr.element.position.Y+col.relativePosition.Y+col.radius {
+		sr.element.position.Y = groundHeightAtPlayerX - float64(playerHeight)
 	}
 
 	return nil
