@@ -18,12 +18,6 @@ var (
 	playerHeight = int32(math.Round(spriteHeight * spriteScale))
 )
 
-// Player struct
-/*type Player struct {
-	Texture *sdl.Texture
-	X, Y    float64
-}*/
-
 func NewPlayer(renderer *sdl.Renderer, x, y float64) *Element {
 	player := &Element{}
 
@@ -42,38 +36,3 @@ func NewPlayer(renderer *sdl.Renderer, x, y float64) *Element {
 
 	return player
 }
-
-// NewPlayer create a new player
-/*func NewPlayer(renderer *sdl.Renderer, x, y int32) *Player {
-	img, err := sdl.LoadBMP("sprites/sprite.bmp")
-	if err != nil {
-		return &Player{}
-	}
-	defer img.Free()
-	texture, err := renderer.CreateTextureFromSurface(img)
-	if err != nil {
-		fmt.Println("error creating texture: ", err)
-	}
-
-	return &Player{Texture: texture, X: float64(x), Y: float64(y)}
-}*/
-
-/*
-func (p *Player) OnDraw(renderer *sdl.Renderer) {
-	renderer.Copy(p.Texture,
-		&sdl.Rect{X: 0, Y: 0, W: spriteWidth, H: spriteHeight},
-		&sdl.Rect{X: int32(p.X - float64(playerWidth/2.0)), Y: int32(p.Y-float64(playerHeight/2.0)) - 100, W: playerWidth, H: playerHeight})
-}*/
-/*
-func (p *Player) OnUpdate() {
-	keys := sdl.GetKeyboardState()
-
-	if keys[sdl.SCANCODE_LEFT] == 1 || keys[sdl.SCANCODE_A] == 1 {
-		p.X -= playerSpeed
-	}
-
-	if keys[sdl.SCANCODE_RIGHT] == 1 || keys[sdl.SCANCODE_D] == 1 {
-		p.X += playerSpeed
-	}
-
-}*/
