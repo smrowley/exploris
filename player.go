@@ -31,6 +31,7 @@ func NewPlayer(renderer *sdl.Renderer, x, y float64) *Element {
 	player.AddComponent(newSpriteRenderer(renderer, "sprites/sprite.bmp"))
 	player.AddComponent(newAccelerator(renderer, Vector{0, .05}))
 	player.AddComponent(newMovement(renderer))
+	player.AddComponent(newJump(renderer))
 
 	player.collisionPoints = append(player.collisionPoints, CollisionPoint{Vector{11, 24}, 8})
 

@@ -29,6 +29,7 @@ type Element struct {
 	active          bool
 	components      []Component
 	collisionPoints []CollisionPoint
+	grounded        bool
 }
 
 func (el *Element) AddComponent(new Component) {

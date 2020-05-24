@@ -44,6 +44,7 @@ func (sr *SpriteRenderer) OnDraw(renderer *sdl.Renderer) error {
 }
 
 func (sr *SpriteRenderer) OnUpdate() error {
+	sr.element.grounded = false
 	sr.element.position.X += sr.element.velocity.X
 	sr.element.position.Y += sr.element.velocity.Y
 
@@ -55,13 +56,16 @@ func (sr *SpriteRenderer) OnUpdate() error {
 	relativeX -= float64(index)
 
 	groundHeightAtPlayerX := float64(ground[index].vy[0]) - (float64(ground[index].vy[0]-ground[index].vy[1]) * relativeX) + 1
-	//groundHeightAtPlayerX := float64(ground[index].vy[0]) float64(ground[index].vy[0]-ground[index].vy[1])
 
-	fmt.Printf("relativeX: %v, ground index: %v, v0: %v, v1: %v\n", relativeX, index, ground[index].vy[0], ground[index].vy[1])
+	//fmt.Printf("relativeX: %v, ground index: %v, v0: %v, v1: %v\n", relativeX, index, ground[index].vy[0], ground[index].vy[1])
 
 	if groundHeightAtPlayerX < sr.element.position.Y+col.relativePosition.Y+col.radius {
 		sr.element.position.Y = groundHeightAtPlayerX - float64(playerHeight)
+		sr.element.velocity.Y = 0
+		sr.element.grounded = true
 	}
+
+	fmt.Printf("grounded: %v\n", sr.element.grounded)
 
 	return nil
 }
