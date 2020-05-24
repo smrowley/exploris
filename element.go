@@ -14,13 +14,21 @@ type Vector struct {
 type Component interface {
 	OnUpdate() error
 	OnDraw(renderer *sdl.Renderer) error
+	SetElement(element *Element)
+}
+
+type CollisionPoint struct {
+	relativePosition Vector
+	radius           float64
 }
 
 type Element struct {
-	position   Vector
-	rotation   float64
-	active     bool
-	components []Component
+	position        Vector
+	rotation        float64
+	velocity        Vector
+	active          bool
+	components      []Component
+	collisionPoints []CollisionPoint
 }
 
 func (el *Element) AddComponent(new Component) {
@@ -29,7 +37,7 @@ func (el *Element) AddComponent(new Component) {
 			panic(fmt.Sprintf("component of type %v already exists on element", reflect.TypeOf(new)))
 		}
 	}
-
+	new.SetElement(el)
 	el.components = append(el.components, new)
 }
 

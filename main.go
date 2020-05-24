@@ -1,6 +1,11 @@
 package main
 
 import (
+	"math"
+	"math/rand"
+	"time"
+
+	"github.com/veandco/go-sdl2/gfx"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -9,7 +14,19 @@ const (
 	screenHeight = 600
 )
 
+var (
+	elements = make([]*Element, 0, 0)
+	ground   = make([]*GroundPiece, screenWidth/10)
+)
+
+type GroundPiece struct {
+	vx []int16
+	vy []int16
+}
+
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
 	}
@@ -30,11 +47,26 @@ func main() {
 
 	defer renderer.Destroy()
 
-	player, err := NewPlayer(renderer, screenWidth/2, screenHeight-32)
+	elements = append(elements, NewPlayer(renderer, 100.0, 100.0))
 
-	if err != nil {
-		panic(err)
+	y := int16(400)
+	offset := int16(0)
+	for i := int16(0); int(i) < len(ground); i++ {
+		x := i * 10
+		num := rand.Intn(5) - 2
+		offset += int16(num)
+		offset = int16(math.Min(float64(offset), 5))
+		offset = int16(math.Max(float64(offset), -5))
+		ground[i] = &GroundPiece{[]int16{x, x + 9, x + 9, x}, []int16{y, y + offset, y + offset + 9, y + 9}}
+		y += offset
 	}
+
+	groundColor := sdl.Color{R: 0, G: 153, B: 51, A: 255}
+
+	fpsManager := &gfx.FPSmanager{}
+
+	gfx.InitFramerate(fpsManager)
+	gfx.SetFramerate(fpsManager, gfx.FPS_UPPER_LIMIT)
 
 	for {
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -46,16 +78,26 @@ func main() {
 
 		keys := sdl.GetKeyboardState()
 
-		if (keys[sdl.SCANCODE_LCTRL] == 1 || keys[sdl.SCANCODE_RCTRL] == 1) && (keys[sdl.SCANCODE_Q] == 1 || keys[sdl.SCANCODE_W] == 1) {
+		if (keys[sdl.SCANCODE_LCTRL] == 1 || keys[sdl.SCANCODE_RCTRL] == 1) && (keys[sdl.SCANCODE_Q] == 1 || keys[sdl.SCANCODE_W] == 1 || keys[sdl.SCANCODE_C] == 1) {
 			return
 		}
 
-		renderer.SetDrawColor(255, 255, 255, 255)
+		renderer.SetDrawColor(200, 200, 200, 255)
 		renderer.Clear()
 
-		player.Draw(renderer)
-		player.Update()
+		for _, g := range ground {
+			gfx.FilledPolygonColor(renderer, g.vx, g.vy, groundColor)
+		}
+
+		for _, el := range elements {
+			for _, comp := range el.components {
+				comp.OnDraw(renderer)
+				comp.OnUpdate()
+			}
+		}
 
 		renderer.Present()
+
+		gfx.FramerateDelay(fpsManager)
 	}
 }
