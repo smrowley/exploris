@@ -87,7 +87,6 @@ func (sr *SpriteRenderer) OnUpdate() error {
 			sr.flip = sdl.FLIP_NONE
 		}
 	} else {
-		//sr.flip = sdl.FLIP_NONE
 		sr.rowIndex = 0
 		sr.animationIndex = 0
 	}
