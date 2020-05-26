@@ -5,11 +5,13 @@ import (
 )
 
 type Movement struct {
-	element *Element
+	element      *Element
+	maxVelocity  float32
+	acceleration float32
 }
 
 func newMovement(renderer *sdl.Renderer) *Movement {
-	return &Movement{}
+	return &Movement{maxVelocity: 1.0, acceleration: .02}
 }
 
 func (m *Movement) SetElement(element *Element) {
@@ -24,11 +26,19 @@ func (m *Movement) OnUpdate() error {
 	keys := sdl.GetKeyboardState()
 
 	if keys[sdl.SCANCODE_LEFT] == 1 || keys[sdl.SCANCODE_A] == 1 {
-		m.element.velocity.X = -playerSpeed
+		if float32(m.element.velocity.X) > -m.maxVelocity {
+			m.element.velocity.X -= float64(m.acceleration)
+		}
 	} else if keys[sdl.SCANCODE_RIGHT] == 1 || keys[sdl.SCANCODE_D] == 1 {
-		m.element.velocity.X = playerSpeed
-	} else {
-		m.element.velocity.X = 0
+		if float32(m.element.velocity.X) < m.maxVelocity {
+			m.element.velocity.X += float64(m.acceleration)
+		}
+	} else if m.element.velocity.X != 0 {
+		if m.element.velocity.X > 0 {
+			m.element.velocity.X -= float64(m.acceleration)
+		} else {
+			m.element.velocity.X += float64(m.acceleration)
+		}
 	}
 
 	return nil

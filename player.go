@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	playerSpeed  = 1.0
 	spriteWidth  = 24
 	spriteHeight = 32
 	spriteScale  = 1.0
